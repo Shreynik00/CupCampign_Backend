@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, email, phone } = req.body || {};
+    const { name, email, phone ,companyname } = req.body || {};
 
     if (!name || !email || !phone) {
       return res.status(400).json({ status: "error", message: "Missing fields" });
@@ -29,6 +29,7 @@ export default async function handler(req, res) {
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Company Name:</strong> ${companyname}</p>
       `,
     };
 
