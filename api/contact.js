@@ -13,7 +13,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, email, phone } = req.body;
+    const { name, email, phone } = req.body || {};
+
+    if (!name || !email || !phone) {
+      return res.status(400).json({ status: "error", message: "Missing fields" });
+    }
 
     // Prepare email data for Brevo API
     const data = {
@@ -34,19 +38,19 @@ export default async function handler(req, res) {
       headers: {
         accept: "application/json",
         "content-type": "application/json",
-        "api-key": process.env.BREVO_API_KEY, // 🔑 Store in Vercel env
+        "api-key": process.env.BREVO_API_KEY, // Make sure this is set in Vercel!
       },
       body: JSON.stringify(data),
     });
 
     const result = await response.json();
 
-    if (result.messageId) {
+    if (response.ok && result.messageId) {
       return res.status(200).json({ status: "success", result });
     } else {
       return res.status(500).json({ status: "error", result });
     }
   } catch (error) {
-    return res.status(500).json({ status: "error", error: error.message });
+    return res.status(500).json({ status: "error", message: error.message });
   }
 }
